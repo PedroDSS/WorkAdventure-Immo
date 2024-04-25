@@ -5,6 +5,7 @@ import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 console.log('Script started successfully');
 
 let currentPopup: any = undefined;
+let noteWebsite: any;
 
 // Waiting for the API to be ready
 WA.onInit().then(() => {
@@ -29,6 +30,38 @@ WA.onInit().then(() => {
     }).catch(e => console.error(e));
 
 }).catch(e => console.error(e));
+
+WA.room.area.onEnter('silentZone').subscribe(() => {
+    WA.controls.disableWebcam();
+    WA.controls.disableMicrophone();
+});
+
+WA.room.area.onLeave('silentZone').subscribe(() => {
+    WA.controls.restoreWebcam();
+    WA.controls.restoreMicrophone();
+});
+
+WA.room.area.onEnter("apartments").subscribe(async () => {
+    console.log("Entering visibleNote layer");
+
+    noteWebsite = await WA.ui.website.open({
+        url: "./src/apartments.html",
+        position: {
+            vertical: "top",
+            horizontal: "right",
+        },
+        size: {
+            height: "100vh",
+            width: "30vw",
+        },
+        allowApi: true,
+    });
+
+});
+
+WA.room.area.onLeave("apartments").subscribe(() => {
+    noteWebsite.close();
+});
 
 function closePopup(){
     if (currentPopup !== undefined) {
