@@ -31,7 +31,9 @@
             max-height: 100px;
         }
         .details {
+            margin-top: 10px;
             display: none; /* Masquer les détails initialement */
+            clear: both; /* Démarrer une nouvelle ligne */
         }
         .annonce button {
             background-color: #4CAF50;
@@ -46,6 +48,7 @@
             cursor: pointer;
             float: left;
             margin-right: 10px;
+            margin-bottom: 10px;
         }
         .annonce .link-button {
             background-color: #007bff; /* Couleur bleue pour le bouton de lien */
@@ -70,7 +73,7 @@
         <img src="../public/images/appart1.jpeg" alt="Appartement 1">
         <p>Description de l'appartement 1...</p>
         <button onclick="toggleDetails(1)">Détails</button>
-        <a href="url_de_votre_site" target="_blank" class="link-button">Visiter</a>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
             <p>Surface: 80 m²</p>
             <p>Prix: 200 000 €</p>
@@ -82,7 +85,7 @@
         <img src="../public/images/appart1.jpeg" alt="Appartement 2">
         <p>Description de l'appartement 2...</p>
         <button onclick="toggleDetails(2)">Détails</button>
-        <a href="url_de_votre_site" target="_blank" class="link-button">Visiter</a>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
             <p>Surface: 65 m²</p>
             <p>Prix: 180 000 €</p>
@@ -94,7 +97,7 @@
         <img src="../public/images/appart1.jpeg" alt="Appartement 3">
         <p>Description de l'appartement 3...</p>
         <button onclick="toggleDetails(3)">Détails</button>
-        <a href="url_de_votre_site" target="_blank" class="link-button">Visiter</a>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
             <p>Surface: 90 m²</p>
             <p>Prix: 220 000 €</p>
@@ -106,6 +109,10 @@
         function toggleDetails(numeroAnnonce) {
             var details = document.querySelectorAll('.annonce:nth-of-type(' + numeroAnnonce + ') .details')[0];
             details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function goToRoom() {
+            WA.nav.goToRoom("./map.tmj");
         }
     </script>
 </body>
