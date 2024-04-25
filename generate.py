@@ -4,7 +4,24 @@ import json
 
 IMPORTANT_LAYERS = ['floor', 'walls']
 
+# Main Developers : Gokhan KABAR & Pedro DA SILVA SOUSA
+
+# Important walls :
+# TOP-LEFT : 403
+# TOP-RIGHT : 404
+# VERTICAL : 477
+# HORIZONTAL : 479
+# BOTTOM-LEFT : 428
+# BOTTOM-RIGHT : 429
+# SUB-WALL TOP INSIDE : 578
+# SUB-WALL BOTTOM INSIDE : 603
+# SUB-WALL OUTSIDE : 685
+# VOID : 0
+
 def generate_file():
+    """
+        Method used to generate json map for Tiled by scan on architect plan of house or apartment.
+    """
     # Chargement de l'image
     image = cv2.imread('frame-diago.jpg')
 
@@ -52,6 +69,9 @@ def generate_file():
     print('File updated successfully!')
 
 def fill_wall_data(layer, wall_coordinates, floor_mask, grid_width, grid_height, image_width, image_height):
+    """
+        Method used to generate walls
+    """
     # Recherche des pixels noirs dans le masque (sol)
     black_pixels = np.where(floor_mask == 0)
 
@@ -72,6 +92,9 @@ def fill_wall_data(layer, wall_coordinates, floor_mask, grid_width, grid_height,
 
 
 def fill_floor_data(layer, floor_mask, grid_width, grid_height):
+    """
+        Method used to generate floor
+    """
     # Recherche des pixels blancs dans le masque (sol)
     white_pixels = np.where(floor_mask == 255)
 
