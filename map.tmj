@@ -16,7 +16,7 @@
             3, 3, 3, 3, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
             3, 3, 3, 3, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 3,
             3, 3, 3, 3, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3,
-            3, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3,
+            3, 0, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3,
             3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 3,
             3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3,
             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -327,25 +327,35 @@
          "name":"floorLayer",
          "objects":[
                 {
-                 "height":158,
-                 "id":27,
-                 "name":"rdvRoom",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":195,
-                 "x":31,
-                 "y":99
-                }, 
-                {
                  "height":161,
                  "id":31,
-                 "name":"rdvRoom",
+                 "name":"rdvRoom1",
+                 "properties":[
+                        {
+                         "name":"focusable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"rdvRoom1"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onaction"
+                        }, 
+                        {
+                         "name":"zoom_margin",
+                         "type":"float",
+                         "value":1
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"area",
                  "visible":true,
                  "width":197,
-                 "x":540,
+                 "x":29.3333333333334,
                  "y":94
                 }, 
                 {
@@ -391,6 +401,38 @@
                  "width":92,
                  "x":34,
                  "y":417.33335
+                }, 
+                {
+                 "height":161,
+                 "id":56,
+                 "name":"rdvRoom2",
+                 "properties":[
+                        {
+                         "name":"focusable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"rdvRoom2"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onaction"
+                        }, 
+                        {
+                         "name":"zoom_margin",
+                         "type":"float",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"area",
+                 "visible":true,
+                 "width":197,
+                 "x":541.5,
+                 "y":94.1666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -441,7 +483,7 @@
          "y":0
         }],
  "nextlayerid":69,
- "nextobjectid":56,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "properties":[
         {
