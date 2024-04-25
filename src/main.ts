@@ -1,5 +1,6 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
+// import { ActionMessage } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log('Script started successfully');
@@ -11,6 +12,24 @@ let noteWebsite: any;
 WA.onInit().then(() => {
     console.log('Scripting API ready');
     console.log('Player tags: ',WA.player.tags)
+    // let menu = WA.ui.registerMenuCommand('titre du menu', {iframe: "test", key: "houseMenu", allowApi: true});
+    // const msg:ActionMessageOptions = {
+    //         message: 'appuie sur le bouton espace mec', 
+    //         type: 'message',
+    //         callback: () => {
+    //             WA.chat.sendChatMessage("confirmed", "trigger message logic")
+    //         }
+    // }
+    // const msg = new ActionMessage(
+    //     {
+    //         message: 'appuie sur le bouton espace mec', 
+    //         type: 'message',
+    //         callback: () => {
+    //             WA.chat.sendChatMessage("confirmed", "trigger message logic")
+    //         }
+    //     },
+
+    // );
 
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
@@ -27,6 +46,24 @@ WA.onInit().then(() => {
     // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
     bootstrapExtra().then(() => {
         console.log('Scripting API Extra ready');
+        WA.room.area.onEnter('housesLayer').subscribe(() => {
+            const triggerMessage = WA.ui.displayActionMessage({
+                message: "press 'space' to confirm",
+                callback: () => {
+                    WA.chat.sendChatMessage("confirmed", "trigger message logic")
+                }
+            });
+            // menu.open();
+            WA.room.area.onLeave('housesLayer').subscribe(() => {
+                console.log('dehors');
+                triggerMessage.remove();
+                // menu.remove();
+            });
+        });
+        // WA.room.area.onLeave('housesLayer').subscribe(() => {
+        //     console.log('dehors');
+        //     // menu.remove();
+        // });
     }).catch(e => console.error(e));
 
 }).catch(e => console.error(e));
