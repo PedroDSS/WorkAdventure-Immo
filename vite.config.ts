@@ -28,6 +28,7 @@ export default defineConfig({
             input: {
                 index: "./index.html",
                 apartments: "./src/apartments.html",
+                houses: "./src/houses.html",
                 ...getMapsScripts(maps),
             },
         },

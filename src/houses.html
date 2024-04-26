@@ -65,13 +65,13 @@
         }
     </style>
     <script src="https://play.workadventu.re/iframe_api.js"></script>
-    <script type="module" src="./apartments.ts"></script>
+    <script type="module" src="./houses.ts"></script>
 </head>
 <body>
     <div class="annonce">
         <h2>Annonce 1</h2>
-        <img src="../public/images/appart1.jpeg" alt="Appartement 1">
-        <p>Description de l'appartement 1...</p>
+        <img src="../public/images/appart1.jpeg" alt="Maison 1">
+        <p>Description de la maison 1...</p>
         <button onclick="toggleDetails(1)">Détails</button>
         <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
@@ -82,8 +82,8 @@
     </div>
     <div class="annonce">
         <h2>Annonce 2</h2>
-        <img src="../public/images/appart1.jpeg" alt="Appartement 2">
-        <p>Description de l'appartement 2...</p>
+        <img src="../public/images/appart1.jpeg" alt="Maison 2">
+        <p>Description de la maison 2...</p>
         <button onclick="toggleDetails(2)">Détails</button>
         <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
@@ -94,8 +94,8 @@
     </div>
     <div class="annonce">
         <h2>Annonce 3</h2>
-        <img src="../public/images/appart1.jpeg" alt="Appartement 3">
-        <p>Description de l'appartement 3...</p>
+        <img src="../public/images/appart1.jpeg" alt="Maison 3">
+        <p>Description de la maison 3...</p>
         <button onclick="toggleDetails(3)">Détails</button>
         <button class="link-button" onclick="goToRoom()">Visiter</button>
         <div class="details">
@@ -112,7 +112,7 @@
         }
 
         function goToRoom() {
-            WA.nav.goToRoom("./apartment.tmj");
+            WA.nav.goToRoom("./houses.tmj");
         }
     </script>
 </body>

@@ -157,6 +157,28 @@ WA.room.area.onLeave("apartments").subscribe(() => {
     noteWebsite.close();
 });
 
+WA.room.area.onEnter("houses").subscribe(async () => {
+    console.log("Entering visibleNote layer");
+
+    noteWebsite = await WA.ui.website.open({
+        url: "./src/houses.html",
+        position: {
+            vertical: "top",
+            horizontal: "right",
+        },
+        size: {
+            height: "100vh",
+            width: "30vw",
+        },
+        allowApi: true,
+    });
+
+});
+
+WA.room.area.onLeave("houses").subscribe(() => {
+    noteWebsite.close();
+});
+
 function closePopup(){
     if (currentPopup !== undefined) {
         currentPopup.close();

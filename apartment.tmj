@@ -397,7 +397,24 @@
          "draworder":"topdown",
          "id":4,
          "name":"floorLayer",
-         "objects":[],
+         "objects":[
+                {
+                 "height":41.934215699122,
+                 "id":1,
+                 "name":"exitAppartment",
+                 "properties":[
+                        {
+                         "name":"exitUrl",
+                         "type":"string",
+                         "value":"map.tmj"
+                        }],
+                 "rotation":0,
+                 "type":"area",
+                 "visible":true,
+                 "width":98.2833180448172,
+                 "x":382.649718254488,
+                 "y":667.016118464159
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -415,7 +432,7 @@
          "y":0
         }],
  "nextlayerid":18,
- "nextobjectid":1,
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
