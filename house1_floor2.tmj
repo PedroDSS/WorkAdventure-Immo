@@ -323,7 +323,24 @@
          "draworder":"topdown",
          "id":13,
          "name":"floorLayers",
-         "objects":[],
+         "objects":[
+                {
+                 "height":66.7355549814862,
+                 "id":1,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"exitUrl",
+                         "type":"string",
+                         "value":"house1_floor1.tmj"
+                        }],
+                 "rotation":0,
+                 "type":"area",
+                 "visible":true,
+                 "width":36.5969172479118,
+                 "x":605.356066477224,
+                 "y":288.46981830707
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -423,7 +440,7 @@
          "y":0
         }],
  "nextlayerid":17,
- "nextobjectid":1,
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
