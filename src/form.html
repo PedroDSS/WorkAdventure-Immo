@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insertion d'un logement</title>
+    <style>
+        body {
+            background-color: rgba(27,27,41,.95);
+            border-radius: 25rem;
+            font-family: Roboto,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+            margin: 0 auto;
+            display: block;
+            color: rgb(86 234 255);
+        }
+        h1 {
+            font-size: 2rem;
+            color: rgb(255, 255, 255);
+        }
+        #formDiv {
+            padding: 10% 25% 10% 25%;;
+            display: flex;
+            flex-direction: column;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form * {
+            margin-top: 1rem;
+        }
+        #fermerFormulaire{
+            position:fixed;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id ="divFormGlobal">
+        <button type="button" id="fermerFormulaire">
+            <span>&times;</span>
+        </button>
+        <div id="formDiv">
+            <h1>Insertion d'un logement</h1>
+
+            <form action="insertion_appartement.php" method="post" enctype="multipart/form-data">
+                <label for="title">Titre</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="size">Surface (en m²)</label>
+                <input type="number" id="size" name="size" required>
+
+                <label for="type">Type</label>
+                <select id="type" name="type" required>
+                    <option value="">Choisir un type</option>
+                    <option value="apartment">Appartement</option>
+                    <option value="house">Maison</option>
+                </select>
+
+                <label for="number_bedroom">Nombre de chambres</label>
+                <input type="number" id="number_bedroom" name="number_bedroom" required>
+
+                <label for="location">Localisation</label>
+                <input type="text" id="location" name="location" required>
+
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" required>
+
+                <label for="pictures">Images du bien</label>
+                <input type="file" id="pictures" name="pictures[]" multiple required>
+
+                <label for="drawing">Image du plan d'architecte</label>
+                <input type="file" id="drawing" name="drawing" required>
+
+                <label for="price">Prix</label>
+                <input type="number" id="price" name="price" required>
+
+                <button type="submit">Insérer l'appartement</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    // let fermerFormulaire = document.getElementById('fermerFormulaire');
+    // let allIframes = WA.ui.website.getAll();
+    // let colorsMenuIframe = allIframes.find(iframe => iframe.url === './src/html/colors.html')
+    // if(colorsMenuIframe) {
+    //     fermerFormulaire.addEventListener('click', function() {
+    //         colors.close();
+    //     });
+    //     colorsMenuIframe.close();
+    // }
+</script>
