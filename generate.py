@@ -2,15 +2,18 @@ import cv2
 import numpy as np
 import json
 
-IMPORTANT_LAYERS = ['floor', 'walls']
-
 # Main Developers : Gokhan KABAR & Pedro DA SILVA SOUSA
+IMPORTANT_LAYERS = ['floor', 'walls']
+COLLISIONS_TILES = [403, 404, 477, 479, 428, 429, 578, 603, 685]
+
+# Initial values used to store datas
+SUB_WALLS = []
 
 # Important walls :
 # TOP-LEFT : 403
 # TOP-RIGHT : 404
-# VERTICAL : 477
-# HORIZONTAL : 479
+# VERTICAL : 479
+# HORIZONTAL : 477
 # BOTTOM-LEFT : 428
 # BOTTOM-RIGHT : 429
 # SUB-WALL TOP INSIDE : 578
@@ -23,12 +26,12 @@ def generate_file():
         Method used to generate json map for Tiled by scan on architect plan of house or apartment.
     """
     # Chargement de l'image
-    image = cv2.imread('frame-diago.jpg')
+    image = cv2.imread('frame-black.jpg')
 
     # Détection des zones rouges
-    lower_red = np.array([0, 0, 100])
-    upper_red = np.array([100, 100, 255])
-    mask = cv2.inRange(image, lower_red, upper_red)
+    lower_black = np.array([0, 0, 0])
+    upper_black = np.array([50, 50, 50])
+    mask = cv2.inRange(image, lower_black, upper_black)
 
     # Dilation pour améliorer la détection
     kernel = np.ones((5, 5), np.uint8)
@@ -37,7 +40,7 @@ def generate_file():
     # Inversion du masque pour obtenir le sol
     floor_mask = cv2.bitwise_not(dilated_mask)
 
-    # Recherche des contours dans la zone rouge
+    # Recherche des contours dans la zone noire
     contours, _ = cv2.findContours(dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Coordonnées des murs
@@ -59,25 +62,34 @@ def generate_file():
                 if 'layers' in layer and layer['name'] in IMPORTANT_LAYERS:
                     for sub_layer in layer['layers']:
                         if layer['name'] == 'walls':
-                            fill_wall_data(sub_layer, wall_coordinates, floor_mask, grid_width, grid_height, image.shape[1], image.shape[0])
+                            fill_base_data('walls', sub_layer, floor_mask, grid_width, grid_height)
+                            # Start Clean Generation
+                            clean_generation(sub_layer)
                         elif layer['name'] == 'floor':
-                            fill_floor_data(sub_layer, floor_mask, grid_width, grid_height)
+                            fill_base_data('floor', sub_layer, floor_mask, grid_width, grid_height)
 
         with open('plan_updated.tmj', 'w') as file:
             json.dump(map_data, file)
 
     print('File updated successfully!')
 
-def fill_wall_data(layer, wall_coordinates, floor_mask, grid_width, grid_height, image_width, image_height):
+def fill_base_data(data_type, layer, floor_mask, grid_width, grid_height):
     """
-        Method used to generate walls
+        Generic method used to fill data by type
     """
-    # Recherche des pixels noirs dans le masque (sol)
-    black_pixels = np.where(floor_mask == 0)
+    if data_type == "walls":
+        # Recherche des pixels noirs dans le masque (sol)
+        filtered_pixels = np.where(floor_mask == 0)
+        tile_index = 477
+    elif data_type == "floor":
+        # Recherche des pixels blancs dans le masque (sol)
+        filtered_pixels = np.where(floor_mask == 255)
+        tile_index = 755
 
-    for i in range(len(black_pixels[0])):
-        x = black_pixels[1][i]
-        y = black_pixels[0][i]
+
+    for i in range(len(filtered_pixels[0])):
+        x = filtered_pixels[1][i]
+        y = filtered_pixels[0][i]
 
         # Convertir les coordonnées en indices de grille
         grid_x = int(x / (floor_mask.shape[1] / grid_width))
@@ -88,30 +100,47 @@ def fill_wall_data(layer, wall_coordinates, floor_mask, grid_width, grid_height,
             # Calculer l'index correspondant dans la liste de données de la couche
             index = grid_y * grid_width + grid_x
             # Remplir la donnée pour le mur à l'index calculé
-            layer['data'][index] = 477
+            layer['data'][index] = tile_index
+    
 
-
-def fill_floor_data(layer, floor_mask, grid_width, grid_height):
+def clean_generation(layer):
     """
-        Method used to generate floor
+        # Method used to clean walls tiles depending on the position in the grid and the environnement
     """
-    # Recherche des pixels blancs dans le masque (sol)
-    white_pixels = np.where(floor_mask == 255)
+    for w in range(layer['width']):
+        for h in range(layer['height']):
+            index = h * layer['width'] + w
+            tile_value = layer["data"][index]
+            if tile_value == 477:
+                cleaned_tile_value = 477
+                # Start cleaning wall
+                if index == 0:
+                    # TOP LEFT OR CORNER
+                    cleaned_tile_value = 403
+                elif index == (0 * layer['width'] + layer['width'] - 1):
+                    # TOP RIGHT OR CORNER
+                    cleaned_tile_value = 404
+                elif index == (layer['height'] * layer['width'] - layer['width']):
+                    # BOTTOM LEFT OR CORNER
+                    cleaned_tile_value = 428
+                elif index == (layer['height'] * layer['width'] - 1):
+                    # BOTTOM RIGHT OR CORNER
+                    cleaned_tile_value = 429
+                elif index in range(1, layer['width'] - 1) or index in range((layer['height'] * layer['width'] - layer['width']), (layer['height'] * layer['width'] + layer['width'] - 1)):
+                    # VERTICAL WALLS
+                    cleaned_tile_value = 479
+                elif (index % layer['width'] == 0 and 1 <= index // layer['width'] < layer['height'] - 1) or ((index + 1) % layer['width'] == 0 and 1 <= index // layer['width'] < layer['height'] - 1):
+                    cleaned_tile_value = 477
+                layer["data"][index] = cleaned_tile_value
 
-    for i in range(len(white_pixels[0])):
-        x = white_pixels[1][i]
-        y = white_pixels[0][i]
+                # check if horizontal walls in order to get sub walls to write.
+                if cleaned_tile_value == 477:
+                    # Check if there are no walls in the two bottom indices
+                    bottom_indices = [index + layer['width'], index + 2 * layer['width']]
+                    if all(layer["data"][bottom_index] not in COLLISIONS_TILES for bottom_index in bottom_indices):
+                        SUB_WALLS.extend(bottom_indices)
 
-        # Convertir les coordonnées en indices de grille
-        grid_x = int(x / (floor_mask.shape[1] / grid_width))
-        grid_y = int(y / (floor_mask.shape[0] / grid_height))
-
-        # Vérifier que les coordonnées sont dans les limites de la grille
-        if 0 <= grid_x < grid_width and 0 <= grid_y < grid_height:
-            # Calculer l'index correspondant dans la liste de données de la couche
-            index = grid_y * grid_width + grid_x
-            # Remplir la donnée pour le sol à l'index calculé
-            layer['data'][index] = 755
-
+    for index in SUB_WALLS:
+        layer['data'][index] = 578
 
 generate_file()
