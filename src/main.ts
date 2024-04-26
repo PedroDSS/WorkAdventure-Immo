@@ -2,40 +2,57 @@
 
 // import { ActionMessage } from "@workadventure/iframe-api-typings";
 // import { UIWebsite } from "@workadventure/iframe-api-typings";
+import * as fs from 'fs';
+import * as http from 'http';
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log('Script started successfully');
 
 let currentPopup: any = undefined;
 let noteWebsite: any;
-let insertForm: any;
 let triggerMessage: any;
-const json = '../test.json';
+let insertForm: any;
 
 // Waiting for the API to be ready
 WA.onInit().then(() => {
     console.log('Scripting API ready');
     console.log('Player tags: ',WA.player.tags);
 
-    // Fonction pour lire le fichier JSON
+    /////////////////////////////////
+    const server = http.createServer((req, res) => {
+        if (req.url === '/enregistrer' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString();
+            });
+            req.on('end', () => {
+                const donnees = JSON.parse(body);
+                enregistrerDansFichierJSON(donnees);
+                res.end('Données enregistrées avec succès.');
+            });
+        }
+    });
 
-    // let menu = WA.ui.registerMenuCommand('titre du menu', {iframe: "test", key: "houseMenu", allowApi: true});
-    // const msg:ActionMessageOptions = {
-    //         message: 'appuie sur le bouton espace mec', 
-    //         type: 'message',
-    //         callback: () => {
-    //             WA.chat.sendChatMessage("confirmed", "trigger message logic")
-    //         }
-    // }
-    // const msg = new ActionMessage(
-    //     {
-    //         message: 'appuie sur le bouton espace mec', 
-    //         type: 'message',
-    //         callback: () => {
-    //             WA.chat.sendChatMessage("confirmed", "trigger message logic")
-    //         }
-    //     },
-    // );
+    server.listen(3000, () => {
+        console.log('Serveur en cours d\'écoute sur le port 3000');
+    });
+    
+    function enregistrerDansFichierJSON(donnees: any): void {
+        const cheminFichier = '.././test.json';
+        try {
+            let donneesExistantes = [];
+            if (fs.existsSync(cheminFichier)) {
+                const contenuFichier = fs.readFileSync(cheminFichier, 'utf-8');
+                donneesExistantes = JSON.parse(contenuFichier);
+            }
+            donneesExistantes.push(donnees);
+            fs.writeFileSync(cheminFichier, JSON.stringify(donneesExistantes, null, 2), 'utf-8');
+            console.log("Données enregistrées avec succès dans le fichier JSON.");
+        } catch (erreur) {
+            console.error("Erreur lors de l'enregistrement dans le fichier JSON :", erreur);
+        }
+    }
+    /////////////////////////////////
 
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
@@ -53,7 +70,7 @@ WA.onInit().then(() => {
     bootstrapExtra().then(() => {
         console.log('Scripting API Extra ready');
         
-        WA.room.area.onEnter('housesLayer').subscribe(() => {
+        WA.room.area.onEnter('houses').subscribe(() => {
             triggerMessage = WA.ui.displayActionMessage({
                 message: "press 'space' to confirm",
                 callback: () => {
@@ -61,19 +78,18 @@ WA.onInit().then(() => {
                 }
             });
         });
-        WA.room.area.onLeave('housesLayer').subscribe(() => {
+        WA.room.area.onLeave('houses').subscribe(() => {
             console.log('dehors');
             triggerMessage.remove();
         });
 
-        WA.room.area.onEnter("terminal").subscribe(async () => {
+        WA.room.area.onEnter("terminal").subscribe(() => {
             console.log("dedans");
-            // let jsonContent = load();
-            // console.log(jsonContent);
             triggerMessage = WA.ui.displayActionMessage({
                 message: "Appuyer sur espace pour ouvrir le formulaire d'insertion de logement",
-                callback: () => {
-                    insertForm = WA.ui.website.open({
+                callback: async () => {
+                    console.log(insertForm);
+                    insertForm =  await WA.ui.website.open({
                         url: "./src/form.html",
                         position: {
                             vertical: "middle",
@@ -84,42 +100,16 @@ WA.onInit().then(() => {
                             width: "75%",
                         },
                     });
+                    console.log(insertForm);
                 }
             });
-
-            // Wait for the iframe to load completely
-            // await new Promise<UIWebsite>((resolve, reject) => {
-            //     insertForm.addEventListener('load', resolve);
-            // });
-            let test = document.getElementById('divFormGlobal');
-            // let insertFormHtml = document.getElementById('ui-website-' + insertForm.id);
-            console.log('ui-website-' + insertForm.id);
-            let insertFormId = 'ui-website-' + insertForm.id;
-            console.log(insertFormId);
-            let insertFormHtml = document.getElementById('ui-website-'+insertForm.id);
-            console.log(insertFormHtml);
-            // let allIframes = await WA.ui.website.getAll();
-            // let insertForm = allIframes.find(iframe => iframe.url === './src/html/form.html')!;
-            // console.log(insertForm.id)
-            // let insertFormId = document.getElementById('#' + insertForm.id);
-
-            // if(insertForm){
-            //     insertForm.close();
-            // }
-
-            // let fermerFormulaire = document.getElementById('fermerFormulaire');
-            // console.log(fermerFormulaire);
-            // let formDiv = document.getElementById('formDiv'); // Remplacez par l'ID de votre formulaire
-        
-            // fermerFormulaire.addEventListener('click', function() {
-            //     console.log("t'as cliqué");
-            //     // formDiv.style.display = 'none'; // Cache le formulaire
-            // });
         });
         WA.room.area.onLeave("terminal").subscribe(() => {
             console.log("dehors");
             triggerMessage.remove();
-            insertForm.close();
+            if (typeof insertForm !== 'undefined' && insertForm != null) {
+                insertForm.close();
+            }
         });
     }).catch(e => console.error(e));
 
