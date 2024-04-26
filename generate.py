@@ -5,6 +5,9 @@ import json
 # Main Developers : Gokhan KABAR & Pedro DA SILVA SOUSA
 IMPORTANT_LAYERS = ['floor', 'walls']
 COLLISIONS_TILES = [403, 404, 477, 479, 428, 429, 578, 603, 685]
+SOLID_FURNITURES = [1688]
+FURNITURES = []
+MAX_FURNITURES_GENERATION = 10
 
 # Initial values used to store datas
 SUB_WALLS = []
@@ -19,6 +22,7 @@ SUB_WALLS = []
 # SUB-WALL TOP INSIDE : 578
 # SUB-WALL BOTTOM INSIDE : 603
 # SUB-WALL OUTSIDE : 685
+# COLLIDE BLOCK : 2653
 # VOID : 0
 
 def generate_file():
@@ -63,10 +67,14 @@ def generate_file():
                     for sub_layer in layer['layers']:
                         if layer['name'] == 'walls':
                             fill_base_data('walls', sub_layer, floor_mask, grid_width, grid_height)
+                            wall_layer = sub_layer
                             # Start Clean Generation
                             clean_generation(sub_layer)
                         elif layer['name'] == 'floor':
                             fill_base_data('floor', sub_layer, floor_mask, grid_width, grid_height)
+        # generate_base_furnitures(map_data['layers'], wall_layer)
+        # We suppose collisions layers is first
+        generate_collisions(map_data['layers'][0], wall_layer)
 
         with open('plan_updated.tmj', 'w') as file:
             json.dump(map_data, file)
@@ -130,17 +138,40 @@ def clean_generation(layer):
                     # VERTICAL WALLS
                     cleaned_tile_value = 479
                 elif (index % layer['width'] == 0 and 1 <= index // layer['width'] < layer['height'] - 1) or ((index + 1) % layer['width'] == 0 and 1 <= index // layer['width'] < layer['height'] - 1):
+                    # HORIZONTAL WALLS
                     cleaned_tile_value = 477
                 layer["data"][index] = cleaned_tile_value
 
-                # check if horizontal walls in order to get sub walls to write.
+                # Check if horizontal walls in order to get sub walls to write.
                 if cleaned_tile_value == 477:
                     # Check if there are no walls in the two bottom indices
-                    bottom_indices = [index + layer['width'], index + 2 * layer['width']]
+                    bottom_indices = [index + layer['width'], index + (2 * layer['width'])]
                     if all(layer["data"][bottom_index] not in COLLISIONS_TILES for bottom_index in bottom_indices):
                         SUB_WALLS.extend(bottom_indices)
 
+    # Make this for the walls on the top (maybe error on calculation)
+    for w in range(layer['width']):
+        # Check if there are no walls in the two bottom indices
+        bottom_indices = [w + layer['width'], w + (2 * layer['width'])]
+        if all(layer["data"][bottom_index] not in COLLISIONS_TILES for bottom_index in bottom_indices):
+            SUB_WALLS.extend(bottom_indices)
+
     for index in SUB_WALLS:
         layer['data'][index] = 578
+
+def generate_collisions(collision_layer, wall_layer):
+    """
+        Method used to generate collisions in the map
+    """
+    for w in range(wall_layer['width']):
+        for h in range(wall_layer['height']):
+            if wall_layer['data'][h * wall_layer['width'] + w] in COLLISIONS_TILES or wall_layer['data'][h * wall_layer['width'] + w] in SOLID_FURNITURES:
+                collision_layer['data'][h * collision_layer['width'] + w] = 3
+
+def generate_base_furnitures():
+    """
+        Method used in order to generate furnitures in the map.
+    """
+    pass
 
 generate_file()
