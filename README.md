@@ -41,7 +41,7 @@ Pour générer votre carte via le script :
 
 1. Déplacer une image d'un plan dans le dossier du projet.
 2. Exécutez le script de génération `python3 generate.py <chemin_de_votre_image>` afin de créer votre carte.
-3. Changez l'url de la carte sur votre application par l'url de votre carte fraîchement générer `nom_de_votre_image.tmj`.
+3. Changez l'url de la carte sur l'application par l'url de votre carte fraîchement générer `nom_de_votre_image.tmj`.
 
 ## Prévu
 

@@ -19,39 +19,39 @@ WA.onInit().then(() => {
     console.log('Player tags: ',WA.player.tags);
 
     /////////////////////////////////
-    const server = http.createServer((req, res) => {
-        if (req.url === '/enregistrer' && req.method === 'POST') {
-            let body = '';
-            req.on('data', chunk => {
-                body += chunk.toString();
-            });
-            req.on('end', () => {
-                const donnees = JSON.parse(body);
-                enregistrerDansFichierJSON(donnees);
-                res.end('Données enregistrées avec succès.');
-            });
-        }
-    });
+    // const server = http.createServer((req, res) => {
+    //     if (req.url === '/enregistrer' && req.method === 'POST') {
+    //         let body = '';
+    //         req.on('data', chunk => {
+    //             body += chunk.toString();
+    //         });
+    //         req.on('end', () => {
+    //             const donnees = JSON.parse(body);
+    //             enregistrerDansFichierJSON(donnees);
+    //             res.end('Données enregistrées avec succès.');
+    //         });
+    //     }
+    // });
 
-    server.listen(3000, () => {
-        console.log('Serveur en cours d\'écoute sur le port 3000');
-    });
+    // server.listen(3000, () => {
+    //     console.log('Serveur en cours d\'écoute sur le port 3000');
+    // });
     
-    function enregistrerDansFichierJSON(donnees: any): void {
-        const cheminFichier = '.././test.json';
-        try {
-            let donneesExistantes = [];
-            if (fs.existsSync(cheminFichier)) {
-                const contenuFichier = fs.readFileSync(cheminFichier, 'utf-8');
-                donneesExistantes = JSON.parse(contenuFichier);
-            }
-            donneesExistantes.push(donnees);
-            fs.writeFileSync(cheminFichier, JSON.stringify(donneesExistantes, null, 2), 'utf-8');
-            console.log("Données enregistrées avec succès dans le fichier JSON.");
-        } catch (erreur) {
-            console.error("Erreur lors de l'enregistrement dans le fichier JSON :", erreur);
-        }
-    }
+    // function enregistrerDansFichierJSON(donnees: any): void {
+    //     const cheminFichier = '.././test.json';
+    //     try {
+    //         let donneesExistantes = [];
+    //         if (fs.existsSync(cheminFichier)) {
+    //             const contenuFichier = fs.readFileSync(cheminFichier, 'utf-8');
+    //             donneesExistantes = JSON.parse(contenuFichier);
+    //         }
+    //         donneesExistantes.push(donnees);
+    //         fs.writeFileSync(cheminFichier, JSON.stringify(donneesExistantes, null, 2), 'utf-8');
+    //         console.log("Données enregistrées avec succès dans le fichier JSON.");
+    //     } catch (erreur) {
+    //         console.error("Erreur lors de l'enregistrement dans le fichier JSON :", erreur);
+    //     }
+    // }
     /////////////////////////////////
 
     WA.room.area.onEnter('clock').subscribe(() => {
