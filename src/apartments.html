@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annonces immobilières</title>
+    <style>
+        body {
+            background-color: #f2f2f2; /* Gris clair */
+            font-family: Arial, sans-serif;
+        }
+        .annonce {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: white;
+            overflow: hidden; /* Pour éviter que l'image dépasse */
+            position: relative; /* Position relative pour les boutons */
+        }
+        .annonce h2 {
+            margin-bottom: 10px;
+        }
+        .annonce p {
+            margin-bottom: 20px;
+        }
+        .annonce img {
+            float: right;
+            margin-left: 10px;
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .details {
+            margin-top: 10px;
+            display: none; /* Masquer les détails initialement */
+            clear: both; /* Démarrer une nouvelle ligne */
+        }
+        .annonce button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .annonce .link-button {
+            background-color: #007bff; /* Couleur bleue pour le bouton de lien */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: left;
+        }
+    </style>
+    <script src="https://play.workadventu.re/iframe_api.js"></script>
+    
+  <script type="module" crossorigin src="../assets/apartments-09a9d8a7.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/modulepreload-polyfill-3cfb730f.js">
+</head>
+<body>
+    <div class="annonce">
+        <h2>Annonce 1</h2>
+        <img src="../assets/appart1-ac69df08.jpeg" alt="Appartement 1">
+        <p>Description de l'appartement 1...</p>
+        <button onclick="toggleDetails(1)">Détails</button>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
+        <div class="details">
+            <p>Surface: 80 m²</p>
+            <p>Prix: 200 000 €</p>
+            <p>Nombre de chambres: 2</p>
+        </div>
+    </div>
+    <div class="annonce">
+        <h2>Annonce 2</h2>
+        <img src="../assets/appart1-ac69df08.jpeg" alt="Appartement 2">
+        <p>Description de l'appartement 2...</p>
+        <button onclick="toggleDetails(2)">Détails</button>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
+        <div class="details">
+            <p>Surface: 65 m²</p>
+            <p>Prix: 180 000 €</p>
+            <p>Nombre de chambres: 1</p>
+        </div>
+    </div>
+    <div class="annonce">
+        <h2>Annonce 3</h2>
+        <img src="../assets/appart1-ac69df08.jpeg" alt="Appartement 3">
+        <p>Description de l'appartement 3...</p>
+        <button onclick="toggleDetails(3)">Détails</button>
+        <button class="link-button" onclick="goToRoom()">Visiter</button>
+        <div class="details">
+            <p>Surface: 90 m²</p>
+            <p>Prix: 220 000 €</p>
+            <p>Nombre de chambres: 3</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails(numeroAnnonce) {
+            var details = document.querySelectorAll('.annonce:nth-of-type(' + numeroAnnonce + ') .details')[0];
+            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function goToRoom() {
+            WA.nav.goToRoom("./apartment.tmj");
+        }
+    </script>
+</body>
+</html>
