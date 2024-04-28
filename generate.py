@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import json
+import sys
 
 # Main Developers : Gokhan KABAR & Pedro DA SILVA SOUSA
 IMPORTANT_LAYERS = ['floor', 'walls']
@@ -25,61 +26,64 @@ SUB_WALLS = []
 # COLLIDE BLOCK : 2653
 # VOID : 0
 
-def generate_file():
+def generate_file(filepath):
     """
         Method used to generate json map for Tiled by scan on architect plan of house or apartment.
     """
-    # Chargement de l'image
-    image = cv2.imread('frame-black.jpg')
+    try :
+        # Chargement de l'image
+        image = cv2.imread(filepath)
 
-    # Détection des zones rouges
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([50, 50, 50])
-    mask = cv2.inRange(image, lower_black, upper_black)
+        # Détection des zones rouges
+        lower_black = np.array([0, 0, 0])
+        upper_black = np.array([50, 50, 50])
+        mask = cv2.inRange(image, lower_black, upper_black)
 
-    # Dilation pour améliorer la détection
-    kernel = np.ones((5, 5), np.uint8)
-    dilated_mask = cv2.dilate(mask, kernel, iterations=1)
+        # Dilation pour améliorer la détection
+        kernel = np.ones((5, 5), np.uint8)
+        dilated_mask = cv2.dilate(mask, kernel, iterations=1)
 
-    # Inversion du masque pour obtenir le sol
-    floor_mask = cv2.bitwise_not(dilated_mask)
+        # Inversion du masque pour obtenir le sol
+        floor_mask = cv2.bitwise_not(dilated_mask)
 
-    # Recherche des contours dans la zone noire
-    contours, _ = cv2.findContours(dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # Recherche des contours dans la zone noire
+        contours, _ = cv2.findContours(dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Coordonnées des murs
-    wall_coordinates = []
+        # Coordonnées des murs
+        wall_coordinates = []
 
-    for contour in contours:
-        points = contour.reshape(-1, 2)
-        wall_coordinates.extend(points.tolist())
+        for contour in contours:
+            points = contour.reshape(-1, 2)
+            wall_coordinates.extend(points.tolist())
 
-    grid_width = 31
-    grid_height = 21
+        grid_width = 31
+        grid_height = 21
 
-    # Remplissage des données du calque des murs
-    with open('plan.tmj', 'r') as file:
-        map_data = json.load(file)
+        # Remplissage des données du calque des murs
+        with open('plan.tmj', 'r') as file:
+            map_data = json.load(file)
 
-        for layer in map_data['layers']:
-            if layer['type'] == 'group':
-                if 'layers' in layer and layer['name'] in IMPORTANT_LAYERS:
-                    for sub_layer in layer['layers']:
-                        if layer['name'] == 'walls':
-                            fill_base_data('walls', sub_layer, floor_mask, grid_width, grid_height)
-                            wall_layer = sub_layer
-                            # Start Clean Generation
-                            clean_generation(sub_layer)
-                        elif layer['name'] == 'floor':
-                            fill_base_data('floor', sub_layer, floor_mask, grid_width, grid_height)
-        # generate_base_furnitures(map_data['layers'], wall_layer)
-        # We suppose collisions layers is first
-        generate_collisions(map_data['layers'][0], wall_layer)
+            for layer in map_data['layers']:
+                if layer['type'] == 'group':
+                    if 'layers' in layer and layer['name'] in IMPORTANT_LAYERS:
+                        for sub_layer in layer['layers']:
+                            if layer['name'] == 'walls':
+                                fill_base_data('walls', sub_layer, floor_mask, grid_width, grid_height)
+                                wall_layer = sub_layer
+                                # Start Clean Generation
+                                clean_generation(sub_layer)
+                            elif layer['name'] == 'floor':
+                                fill_base_data('floor', sub_layer, floor_mask, grid_width, grid_height)
+            generate_base_furnitures(map_data['layers'], wall_layer)
+            # We suppose collisions layers is first
+            generate_collisions(map_data['layers'][0], wall_layer)
 
-        with open('plan_updated.tmj', 'w') as file:
-            json.dump(map_data, file)
+            with open('plan_updated.tmj', 'w') as file:
+                json.dump(map_data, file)
 
-    print('File updated successfully!')
+        print('File updated successfully!')
+    except Exception as error:
+        print(f"Error while trying to generate map because : {error}")
 
 def fill_base_data(data_type, layer, floor_mask, grid_width, grid_height):
     """
@@ -109,7 +113,6 @@ def fill_base_data(data_type, layer, floor_mask, grid_width, grid_height):
             index = grid_y * grid_width + grid_x
             # Remplir la donnée pour le mur à l'index calculé
             layer['data'][index] = tile_index
-    
 
 def clean_generation(layer):
     """
@@ -142,14 +145,14 @@ def clean_generation(layer):
                     cleaned_tile_value = 477
                 layer["data"][index] = cleaned_tile_value
 
-                # Check if horizontal walls in order to get sub walls to write.
+                # This part generate sub walls for the others walls.
                 if cleaned_tile_value == 477:
                     # Check if there are no walls in the two bottom indices
                     bottom_indices = [index + layer['width'], index + (2 * layer['width'])]
                     if all(layer["data"][bottom_index] not in COLLISIONS_TILES for bottom_index in bottom_indices):
                         SUB_WALLS.extend(bottom_indices)
 
-    # Make this for the walls on the top (maybe error on calculation)
+    # This part generate subwalls for the top
     for w in range(layer['width']):
         # Check if there are no walls in the two bottom indices
         bottom_indices = [w + layer['width'], w + (2 * layer['width'])]
@@ -174,4 +177,11 @@ def generate_base_furnitures():
     """
     pass
 
-generate_file()
+if __name__ == "__main__":
+    # Check if the correct number of command-line arguments is provided
+    if len(sys.argv) != 2:
+        print("Bad function call, example of call : python3 generation.py <file_path>")
+        sys.exit(1)
+
+    # Call the generate_file function with the file path argument
+    generate_file(sys.argv[1])

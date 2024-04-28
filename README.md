@@ -1,55 +1,55 @@
-# WorkAdventure Map Starter Kit
+# Projet WorkAdventure-Immo
 
-![map](./map.png)
+## Contexte du Projet
 
-This is a starter kit to help you build your own map for [WorkAdventure](https://workadventu.re).
+Le projet WorkAdventure-Immo révolutionne la manière dont les futurs acheteurs ou locataires explorent virtuellement leurs futurs biens immobiliers. En offrant une expérience immersive, les utilisateurs peuvent découvrir une variété de propriétés, qu'il s'agisse de maisons ou d'appartements, disponibles à l'achat ou à la location. Chaque appartement et maison est représenté en 2D de manière fidèle, offrant ainsi une immersion saisissante. L'atout majeur du projet réside dans sa capacité à générer instantanément une carte Tiled à partir d'un simple plan d'architecte. En quelques secondes seulement, une carte détaillée est créée à partir d'une image, offrant ainsi une expérience utilisateur incomparable.
 
-To understand how to use this starter kit, follow the tutorial at [https://workadventu.re/map-building](https://workadventu.re/map-building).
+## Développeurs
 
-## Structure
-* *public*: Static files like PDFs or audio files
-* *src*: Scripts files
-* *tilesets*: All tilesets
-* *map.tmj*: Map file
-* *map.png*: The map thumbnail displayed on the in-game map information
+- **Pedro DA SILVA SOUSA** (@PedroDSS)
+  - Initialisation du projet.
+  - Développement du script de génération de cartes via un plan (principalement).
+  - Création et modifications d'une carte squelette pour la génération de cartes.
+  - Modifications de cartes Tiled.
 
-If you want to use more than one map file, just add the new map file on root or in a folder.
+- **Gokhan KABAR** (@GokhanKabar)
+  - Développement du script de génération de carte via un plan (principalement).
+  - Création et modifications d'une carte squelette pour la génération de cartes.
+  - Modifications de cartes Tiled.
 
-we recommend using 500x500 images for the map thumbnails.
+- **Mohammad GONS SAIB** (@MohaGons)
+  - Développement du script de génération de carte via un plan.
+  - Ajouts des annonces immobilières et déplacements sur les différentes cartes des annonces.
+  - Modifications de cartes Tiled.
 
-If you are going to create custom websites to embed in the map, please reference the HTML files in the `input` option in *vite.config.js*.
+- **Erwann Jouvet** (@ErwannJouvet)
+  - Développement du script de génération de carte via un plan.
+  - Création du formulaire de génération de cartes Tiled.
+  - Modifications de cartes Tiled.
 
-## Requirements
+## Initialisation du Projet
 
-Node.js version >=17
+Pour démarrer le projet localement :
 
-## Installation
+1. Clonez ce dépôt sur votre machine locale.
+2. Exécutez `npm install` pour installer les dépendances du projet.
+3. Exécutez `npm run dev` pour lancer le projet et vous balader sur la carte.
 
-With npm installed (comes with [node](https://nodejs.org/en/)), run the following commands into a terminal in the root directory of this project:
+## Initialisation du Script
 
-```shell
-npm install
-npm run dev
-```
+Pour générer votre carte via le script :
 
-## Test production map
+1. Déplacer une image d'un plan dans le dossier du projet.
+2. Exécutez le script de génération `python3 generate.py <chemin_de_votre_image>` afin de créer votre carte.
+3. Changez l'url de la carte sur votre application par l'url de votre carte fraîchement générer `nom_de_votre_image.tmj`.
 
-You can test the optimized map as it will be in production:
-```sh
-npm run build
-npm run prod
-```
+## Prévu
 
-## Licenses
-
-This project contains multiple licenses as follows:
-
-* [Code license](./LICENSE.code) *(all files except those for other licenses)*
-* [Map license](./LICENSE.map) *(`map.tmj` and the map visual as well)*
-* [Assets license](./LICENSE.assets) *(the files inside the `src/assets/` folder)*
-
-### About third party assets
-
-If you add third party assets in your map, do not forget to:
-1. Credit the author and license with the "tilesetCopyright" property present in the properties of each tilesets in the `map.tmj` file
-2. Add the license text in LICENSE.assets
+- Génération de carte directement via l'interface avec un formulaire.
+- Afficher des images sur les différentes pièces des biens immobiliers.
+- Améliorer le script de génération de carte.
+    - Pouvoir choisir le type de murs et de sols lors de la génération.
+    - Pouvoir choisir les entrées et sorties de la carte.
+    - Réussir à générer une carte avec une taille dynamique (par défaut 31x21).
+    - Permettre la détection de pièces et y ajouter les meubles adéquats.
+    - Améliorer la détection des murs et pièces pour avoir une meilleur génération sans avoir des murs plus épais que les autres.
