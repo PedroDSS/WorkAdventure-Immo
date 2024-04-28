@@ -2,8 +2,8 @@
 
 // import { ActionMessage } from "@workadventure/iframe-api-typings";
 // import { UIWebsite } from "@workadventure/iframe-api-typings";
-import * as fs from 'fs';
-import * as http from 'http';
+// import * as fs from 'fs';
+// import * as http from 'http';
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log('Script started successfully');
